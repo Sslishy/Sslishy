@@ -1,0 +1,48 @@
+cmake_minimum_required(VERSION 2.8 )
+project(class)
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+include_directories(
+    /usr/include/python3.8
+)
+
+include_directories(/opt/RVC/include)
+set(RVC_ROOT "/opt/RVC")
+  set(RVC_INCLUDE_DIRS "${RVC_ROOT}/include")
+  set(RVC_LIB_DIR "${RVC_ROOT}/lib")
+  file(GLOB RVC_LIBS "${RVC_LIB_DIR}/libRVC.so" ABSOLUTE)
+  file(GLOB RVC_DEPS_LIBS "${RVC_LIB_DIR}/externals/*.so" ABSOLUTE)
+#add_executable(GetImageCorresponcePointICP /home/slishy/Code/class/lib/GetImageCorresponcePointICP.cpp)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}" ${CMAKE_MODULE_PATH})
+include_directories(/home/slishy/Code/3SVIZ/CameraControl.h)
+link_directories(${CMAKE_SOURCE_DIR})
+
+add_library(CameraControl SHARED CameraControl.cpp)
+add_library(OpenCam SHARED OpenCam.cpp)
+add_executable(GetImageCorresponcePoint GetImageCorresponcePoint.cpp)
+target_link_libraries(GetImageCorresponcePoint ${RVC_LIBS} ${RVC_DEPS_LIBS} /opt/RVC/examples/C++/build/libSave_IO.a /opt/RVC/examples/C++/build/libUtils.a)
+target_link_libraries(GetImageCorresponcePoint ${PCL_LIBRARIES} ${OpenCV_LIBS}  /usr/lib/x86_64-linux-gnu/libopencv_highgui.so)
+
+add_executable(capture capture.cpp)
+target_link_libraries(capture ${CMAKE_SOURCE_DIR}/build/libCameraControl.so)
+target_link_libraries(capture ${RVC_LIBS} ${RVC_DEPS_LIBS} /opt/RVC/examples/C++/build/libSave_IO.a /opt/RVC/examples/C++/build/libUtils.a)
+target_link_libraries(capture ${PCL_LIBRARIES} ${OpenCV_LIBS}  /usr/lib/x86_64-linux-gnu/libopencv_highgui.so)
+
+
+add_executable(main main.cpp)
+target_link_libraries(main ${CMAKE_SOURCE_DIR}/build/libCameraControl.so)
+target_link_libraries(main ${CMAKE_SOURCE_DIR}/build/libOpenCam.so)
+target_link_libraries(main ${RVC_LIBS} ${RVC_DEPS_LIBS} /opt/RVC/examples/C++/build/libSave_IO.a /opt/RVC/examples/C++/build/libUtils.a)
+target_link_libraries(main ${PCL_LIBRARIES} ${OpenCV_LIBS}  /usr/lib/x86_64-linux-gnu/libopencv_highgui.so)
+target_link_libraries(main -lpthread -lm)
+
+add_executable(aruco aruco.cpp)
+target_link_libraries(aruco ${CMAKE_SOURCE_DIR}/build/libCameraControl.so)
+target_link_libraries(aruco ${CMAKE_SOURCE_DIR}/build/libOpenCam.so)
+target_link_libraries(aruco ${RVC_LIBS} ${RVC_DEPS_LIBS} /opt/RVC/examples/C++/build/libSave_IO.a /opt/RVC/examples/C++/build/libUtils.a)
+target_link_libraries(aruco ${PCL_LIBRARIES} ${OpenCV_LIBS}  /usr/lib/x86_64-linux-gnu/libopencv_highgui.so)
+target_link_libraries(aruco -lpthread -lm)
