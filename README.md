@@ -1,4 +1,4 @@
-# 👋 Hi, I'm Sslishy!
+# 👋 Hi, I'm slishy!
 
 ### 🚀 Developer | Python • C++ • AI • Robotics
 
